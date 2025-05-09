@@ -1,0 +1,27 @@
+services:
+  mongo:
+    image: mongo
+    container_name: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: user_db
+    volumes:
+      - mongo_data:/data/db
+    ports:
+      - "27017:27017"
+
+  user-service:
+    build: .
+    container_name: user-service
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+    environment:
+      MONGO_URI: mongodb://root:example@mongo:27017/user_db?authSource=admin
+
+volumes:
+  mongo_data:
